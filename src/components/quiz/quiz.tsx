@@ -17,6 +17,7 @@ type Props = {
   currentQuestion: number;
   totalQuestions: number;
   onAnswer: (answerId: string) => void;
+  temperature?: number;
 };
 
 export default function Quiz({
@@ -24,8 +25,11 @@ export default function Quiz({
   currentQuestion,
   totalQuestions,
   onAnswer,
+  temperature = 15,
 }: Props) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+
+  const progressPercentage = (currentQuestion / totalQuestions) * 100;
 
   const handleAnswerClick = (answerId: string) => {
     setSelectedAnswer(answerId);
@@ -35,20 +39,131 @@ export default function Quiz({
     }, 300);
   };
 
+  const getTemperatureColor = (temp: number) => {
+    if (temp <= 10) return "#4ade80";
+    if (temp <= 15) return "#22c55e";
+    if (temp <= 20) return "#eab308";
+    if (temp <= 25) return "#f97316";
+    return "#ef4444";
+  };
+
+  const getTemperatureStatus = (temp: number) => {
+    if (temp <= 10) return "Très froid";
+    if (temp <= 15) return "Optimal";
+    if (temp <= 20) return "Acceptable";
+    if (temp <= 25) return "Préoccupant";
+    return "Critique";
+  };
+
   return (
     <div id="quiz-container">
       <div className="quiz-wrapper">
+        {temperature !== undefined && (
+          <div className="temperature-gauge">
+            <div className="temperature-header">
+              <div className="temperature-icon">🌡️</div>
+              <div className="temperature-title">Climat</div>
+            </div>
+
+            <div className="thermometer">
+              <div className="thermometer-scale">
+                <div className="temperature-mark hot">35°</div>
+                <div className="temperature-mark warm">30°</div>
+                <div className="temperature-mark warm">25°</div>
+                <div className="temperature-mark normal">20°</div>
+                <div className="temperature-mark normal">15°</div>
+                <div className="temperature-mark cold">10°</div>
+                <div className="temperature-mark cold">5°</div>
+              </div>
+
+              <div className="thermometer-tube">
+                <div
+                  className="thermometer-mercury"
+                  style={{
+                    height: `${Math.min(
+                      Math.max(((temperature - 5) / 30) * 100, 0),
+                      100
+                    )}%`,
+                    backgroundColor: getTemperatureColor(temperature),
+                  }}
+                />
+                <div
+                  className="thermometer-bulb"
+                  style={{
+                    backgroundColor: getTemperatureColor(temperature),
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="temperature-display">
+              <div className="temperature-value">
+                {temperature.toFixed(1)}°C
+              </div>
+              <div className="temperature-status">
+                {getTemperatureStatus(temperature)}
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="quiz-header">
-          <span className="progress-info">
-            Question {currentQuestion} sur {totalQuestions}
-          </span>
+          <div className="progress-info">
+            <span className="progress-text">
+              Question {currentQuestion} sur {totalQuestions}
+            </span>
+            <span className="progress-percentage">
+              {Math.round(progressPercentage)}%
+            </span>
+          </div>
+
+          <div className="circular-progress">
+            <svg className="circular-progress-svg" viewBox="0 0 36 36">
+              <path
+                className="circular-progress-bg"
+                d="M18 2.0845
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+              <path
+                className="circular-progress-fill"
+                strokeDasharray={`${progressPercentage}, 100`}
+                d="M18 2.0845
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+            </svg>
+            <div className="circular-progress-text">
+              {currentQuestion}/{totalQuestions}
+            </div>
+          </div>
         </div>
 
         <div className="progress-bar-container">
-          <div
-            className="progress-bar"
-            style={{ width: `${(currentQuestion / totalQuestions) * 100}%` }}
-          />
+          <div className="progress-bar-bg">
+            <div
+              className="progress-bar"
+              style={{ width: `${progressPercentage}%` }}
+            />
+            <div
+              className="progress-bar-glow"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+          <div className="progress-steps">
+            {Array.from({ length: totalQuestions }, (_, index) => (
+              <div
+                key={index}
+                className={`progress-step ${
+                  index < currentQuestion
+                    ? "completed"
+                    : index === currentQuestion - 1
+                    ? "current"
+                    : "pending"
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="quiz-card">

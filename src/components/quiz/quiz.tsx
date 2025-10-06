@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./quiz.css";
 
 type Answer = {
@@ -28,10 +28,19 @@ export default function Quiz({
   temperature = 15,
 }: Props) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-
+  const [showDoor, setShowDoor] = useState(true);
+  
   const progressPercentage = (currentQuestion / totalQuestions) * 100;
 
-  const handleAnswerClick = (answerId: string) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowDoor(false);
+    }, 8000); // 8 secondes pour la nouvelle animation
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);  const handleAnswerClick = (answerId: string) => {
     setSelectedAnswer(answerId);
     setTimeout(() => {
       onAnswer(answerId);
@@ -57,6 +66,62 @@ export default function Quiz({
 
   return (
     <div id="quiz-container">
+      {showDoor && (
+        <div className="door-overlay">
+          <div className="door-scene">
+            <div className="door-container">
+              <div className="stone-arch"></div>
+              <div className="stone-wall"></div>
+              
+              <div className="door-frame">
+                <div className="interior"></div>
+                
+                <div className="door">
+                  <div className="wood-planks"></div>
+                  
+                  <div className="metal-bands">
+                    <div className="band">
+                      <div className="rivet"></div>
+                      <div className="rivet"></div>
+                      <div className="rivet"></div>
+                      <div className="rivet"></div>
+                    </div>
+                    <div className="band">
+                      <div className="rivet"></div>
+                      <div className="rivet"></div>
+                      <div className="rivet"></div>
+                      <div className="rivet"></div>
+                    </div>
+                    <div className="band">
+                      <div className="rivet"></div>
+                      <div className="rivet"></div>
+                      <div className="rivet"></div>
+                      <div className="rivet"></div>
+                    </div>
+                  </div>
+                  
+                  <div className="knocker"></div>
+                  
+                  <div className="door-handle">
+                    <div className="handle-ring"></div>
+                  </div>
+                </div>
+                
+                <div className="mystical-light"></div>
+                
+                <div className="dust">
+                  <div className="dust-particle"></div>
+                  <div className="dust-particle"></div>
+                  <div className="dust-particle"></div>
+                  <div className="dust-particle"></div>
+                  <div className="dust-particle"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="quiz-wrapper">
         {temperature !== undefined && (
           <div className="temperature-gauge">

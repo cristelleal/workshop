@@ -13,6 +13,406 @@
   position: relative;
 }
 
+.door-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #0a0e15;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: doorFadeOut 0.5s ease-in-out 8s forwards;
+  overflow: hidden;
+  font-family: 'Georgia', serif;
+}
+
+@keyframes doorFadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.door-scene {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 2000px;
+  animation: zoomIn 5s ease-in-out 3s forwards;
+  background: radial-gradient(ellipse at center, #1a1f2e 0%, #0a0e15 100%);
+}
+
+.door-container {
+  position: relative;
+  width: 500px;
+  height: 700px;
+  transform-style: preserve-3d;
+}
+
+/* Mur en pierre */
+.stone-wall {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(135deg, transparent 40%, rgba(0,0,0,0.3) 41%, transparent 42%),
+    linear-gradient(225deg, transparent 40%, rgba(0,0,0,0.3) 41%, transparent 42%),
+    linear-gradient(180deg, #2a3441 0%, #1f2833 50%, #1a1f2a 100%);
+  border-radius: 250px 250px 0 0;
+  box-shadow: 
+    inset 0 0 150px rgba(0,0,0,0.9),
+    inset 10px 10px 30px rgba(0,0,0,0.5),
+    0 30px 80px rgba(0,0,0,0.9);
+}
+
+.stone-wall::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 0%, transparent 3%),
+    radial-gradient(circle at 60% 70%, rgba(255,255,255,0.03) 0%, transparent 2%),
+    radial-gradient(circle at 80% 20%, rgba(0,0,0,0.3) 0%, transparent 4%),
+    radial-gradient(circle at 40% 80%, rgba(0,0,0,0.2) 0%, transparent 3%);
+  border-radius: 250px 250px 0 0;
+}
+
+/* Arc en pierre */
+.stone-arch {
+  position: absolute;
+  top: -25px;
+  left: -40px;
+  right: -40px;
+  height: 380px;
+  background: linear-gradient(180deg, #7a6244 0%, #5d4a35 50%, #4a3826 100%);
+  border-radius: 270px 270px 0 0;
+  box-shadow: 
+    inset 0 -20px 50px rgba(0,0,0,0.6),
+    inset 0 10px 30px rgba(255,200,100,0.1),
+    0 15px 50px rgba(0,0,0,0.9);
+  z-index: -1;
+}
+
+.stone-arch::after {
+  content: '';
+  position: absolute;
+  inset: 15px;
+  border-radius: 255px 255px 0 0;
+  box-shadow: 
+    inset 0 5px 15px rgba(0,0,0,0.5),
+    inset 0 -5px 15px rgba(255,200,100,0.15);
+}
+
+.door-frame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d;
+}
+
+.interior {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  width: 300px;
+  height: 500px;
+  background: 
+    radial-gradient(ellipse at 50% 30%, #ff9d00 0%, #ff6b00 20%, #c44500 40%, #1a0800 70%, #000 100%);
+  border-radius: 150px 150px 0 0;
+  opacity: 0;
+  animation: revealInterior 2s ease-out 3s forwards;
+  box-shadow: 
+    inset 0 0 100px rgba(255,100,0,0.4),
+    0 0 80px rgba(255,100,0,0.3);
+  overflow: hidden;
+}
+
+.interior::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    repeating-linear-gradient(90deg, transparent 0px, rgba(0,0,0,0.3) 50px, transparent 100px),
+    repeating-linear-gradient(0deg, transparent 0px, rgba(0,0,0,0.2) 80px, transparent 160px);
+  animation: flickerLight 3s ease-in-out infinite;
+}
+
+.door {
+  position: relative;
+  width: 340px;
+  height: 550px;
+  background: linear-gradient(180deg, #5c4033 0%, #4a3326 50%, #3d261a 100%);
+  border-radius: 170px 170px 0 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation: openDoor 3s ease-in-out 1.5s forwards;
+  box-shadow: 
+    inset -5px 0 15px rgba(0,0,0,0.7),
+    inset 5px 0 10px rgba(100,70,50,0.3),
+    8px 8px 40px rgba(0,0,0,0.9);
+}
+
+.wood-planks {
+  position: absolute;
+  inset: 0;
+  border-radius: 170px 170px 0 0;
+  background: 
+    repeating-linear-gradient(90deg,
+      #5c4033 0px,
+      #4a3326 3px,
+      #3d261a 5px,
+      #5c4033 8px,
+      #6b4e3d 55px,
+      #5c4033 58px,
+      #4a3326 60px,
+      #3d261a 63px,
+      #5c4033 65px
+    );
+  box-shadow: 
+    inset 0 0 50px rgba(0,0,0,0.5),
+    inset 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.wood-planks::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 170px 170px 0 0;
+  background-image:
+    linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.15) 50%, transparent 52%),
+    repeating-linear-gradient(0deg, transparent 0%, rgba(0,0,0,0.1) 10%, transparent 20%);
+  opacity: 0.6;
+}
+
+.metal-bands {
+  position: absolute;
+  inset: 0;
+  border-radius: 170px 170px 0 0;
+}
+
+.band {
+  position: absolute;
+  left: 25px;
+  right: 25px;
+  height: 35px;
+  background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #0a0a0a 100%);
+  box-shadow: 
+    inset 0 2px 5px rgba(255,255,255,0.1),
+    inset 0 -2px 5px rgba(0,0,0,0.9),
+    0 4px 10px rgba(0,0,0,0.8);
+  border-radius: 3px;
+}
+
+.band::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
+  border-radius: 2px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.band:nth-child(1) { top: 100px; }
+.band:nth-child(2) { top: 250px; }
+.band:nth-child(3) { top: 400px; }
+
+.rivet {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle at 30% 30%, #4a4a4a, #1a1a1a);
+  border-radius: 50%;
+  box-shadow: 
+    inset -1px -1px 2px rgba(255,255,255,0.3),
+    inset 1px 1px 2px rgba(0,0,0,0.8),
+    0 2px 4px rgba(0,0,0,0.6);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.rivet:nth-child(2) { left: 50px; }
+.rivet:nth-child(3) { right: 50px; }
+.rivet:nth-child(4) { left: 50%; transform: translate(-50%, -50%); }
+
+.door-handle {
+  position: absolute;
+  top: 50%;
+  right: 50px;
+  transform: translateY(-50%);
+}
+
+.handle-ring {
+  width: 60px;
+  height: 80px;
+  border: 8px solid #1a1a1a;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 
+    inset -2px -2px 5px rgba(255,255,255,0.2),
+    inset 2px 2px 5px rgba(0,0,0,0.9),
+    -3px 5px 15px rgba(0,0,0,0.8);
+  position: relative;
+}
+
+.handle-ring::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle at 30% 30%, #3a3a3a, #0a0a0a);
+  border-radius: 50%;
+  box-shadow: 
+    inset -2px -2px 4px rgba(255,255,255,0.3),
+    inset 2px 2px 4px rgba(0,0,0,0.9),
+    0 4px 8px rgba(0,0,0,0.7);
+}
+
+.knocker {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle at 30% 30%, #3a3a3a, #0a0a0a);
+  border-radius: 50%;
+  box-shadow: 
+    inset -2px -2px 5px rgba(255,255,255,0.3),
+    inset 2px 2px 5px rgba(0,0,0,0.9),
+    0 6px 15px rgba(0,0,0,0.8);
+}
+
+.knocker::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #2a2a2a, #0a0a0a);
+  border-radius: 50%;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.9);
+}
+
+.mystical-light {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  background: radial-gradient(ellipse at center, rgba(255,157,0,0.8) 0%, rgba(255,107,0,0.4) 30%, transparent 70%);
+  opacity: 0;
+  animation: expandLight 3s ease-out 3s forwards;
+  pointer-events: none;
+  filter: blur(20px);
+}
+
+.dust {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  animation: showDust 2s ease-out 3.5s forwards;
+}
+
+.dust-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255,200,150,0.6);
+  border-radius: 50%;
+  animation: floatDust 4s ease-in-out infinite;
+}
+
+.dust-particle:nth-child(1) { left: 30%; top: 40%; animation-delay: 0s; }
+.dust-particle:nth-child(2) { left: 60%; top: 30%; animation-delay: 0.5s; }
+.dust-particle:nth-child(3) { left: 45%; top: 60%; animation-delay: 1s; }
+.dust-particle:nth-child(4) { left: 70%; top: 50%; animation-delay: 1.5s; }
+.dust-particle:nth-child(5) { left: 25%; top: 70%; animation-delay: 2s; }
+
+@keyframes openDoor {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(-125deg);
+  }
+}
+
+@keyframes zoomIn {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(2.2);
+  }
+}
+
+@keyframes revealInterior {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes expandLight {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    width: 600px;
+    height: 600px;
+    opacity: 0.9;
+  }
+}
+
+@keyframes flickerLight {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes floatDust {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) translateX(20px);
+  }
+}
+
+@keyframes showDust {
+  to { opacity: 1; }
+}
+
 .quiz-wrapper {
   max-width: 800px;
   width: 100%;

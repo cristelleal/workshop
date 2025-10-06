@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./homepage.css";
 import Modal from "../modal/modal";
 
@@ -9,6 +9,26 @@ type Props = {
 export default function Homepage({ onStart }: Props) {
   const [pseudo, setPseudo] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [currentFactIndex, setCurrentFactIndex] = useState(0);
+
+  const environmentFacts = [
+    "🌍 Plus de 8 millions de tonnes de plastique finissent dans les océans chaque année",
+    "🌱 Une forêt de la taille d'un terrain de football disparaît toutes les secondes",
+    "♻️ Recycler une tonne de papier permet de sauver 17 arbres",
+    "🌡️ La température moyenne mondiale a augmenté de 1,1°C depuis 1880",
+    "💧 L'agriculture consomme 70% de l'eau douce mondiale",
+  ];
+
+  useEffect(() => {
+    setIsLoaded(true);
+
+    const interval = setInterval(() => {
+      setCurrentFactIndex((prev) => (prev + 1) % environmentFacts.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [environmentFacts.length]);
 
   const handleStart = () => {
     if (!pseudo.trim()) {
@@ -26,13 +46,27 @@ export default function Homepage({ onStart }: Props) {
     setShowModal(false);
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && pseudo.trim()) {
+      handleStart();
+    }
+  };
+
   return (
     <>
       <Modal isOpen={showModal} onClose={closeModal} title="Pseudo requis">
         <p>Merci d'entrer un pseudo avant de commencer le quiz !</p>
       </Modal>
-      
-      <main id="homepage">
+
+      <main id="homepage" className={isLoaded ? "loaded" : ""}>
+        <div className="floating-elements">
+          <div className="floating-element leaf">🍃</div>
+          <div className="floating-element earth">🌍</div>
+          <div className="floating-element recycle">♻️</div>
+          <div className="floating-element tree">🌳</div>
+          <div className="floating-element drop">💧</div>
+        </div>
+
         <div className="container">
           <header className="header">
             <div className="logo-wrapper">
@@ -42,9 +76,17 @@ export default function Homepage({ onStart }: Props) {
                   alt="logo"
                   className="logo-img"
                 />
+                <div className="logo-glow"></div>
               </div>
             </div>
           </header>
+
+          <div className="fact-banner">
+            <div className="fact-content">
+              <span className="fact-label">Le saviez-vous ?</span>
+              <p className="fact-text">{environmentFacts[currentFactIndex]}</p>
+            </div>
+          </div>
 
           <div className="card">
             <div className="card-section">
@@ -52,53 +94,56 @@ export default function Homepage({ onStart }: Props) {
               <p className="info-text">
                 Testez vos connaissances environnementales dans un quiz ludique
                 et interactif. Chaque bonne réponse vous rapproche d'un avenir
-                plus durable 🌍
+                plus durable
               </p>
             </div>
 
             <div className="card-section">
               <h2 className="section-title">Thématiques</h2>
-              <ul className="list">
-                <li className="list-item">
-                  Changement climatique et effet de serre
-                </li>
-                <li className="list-item">Biodiversité et écosystèmes</li>
-                <li className="list-item">Énergies renouvelables</li>
-                <li className="list-item">
-                  Gestion des déchets et économie circulaire
-                </li>
-              </ul>
-            </div>
-
-            <div className="card-section">
-              <h2 className="section-title">Informations</h2>
-              <div className="badges">
-                <span className="badge">Niveau débutant</span>
-                <span className="badge">Tous publics</span>
-                <span className="badge">Questions variées</span>
+              <div className="topics-grid">
+                <div className="topic-card">
+                  <span className="topic-icon">🌡️</span>
+                  <span className="topic-text">Changement climatique</span>
+                </div>
+                <div className="topic-card">
+                  <span className="topic-icon">♻️</span>
+                  <span className="topic-text">Biodiversité</span>
+                </div>
+                <div className="topic-card">
+                  <span className="topic-icon">⚡</span>
+                  <span className="topic-text">Énergies renouvelables</span>
+                </div>
               </div>
             </div>
 
             <div className="card-section">
               <div className="form-group">
-                <label htmlFor="pseudo" className="label">
-                  Votre pseudo
-                </label>
-                <input
-                  id="pseudo"
-                  type="text"
-                  className="input"
-                  placeholder="Entrez votre pseudo..."
-                  value={pseudo}
-                  onChange={(e) => setPseudo(e.target.value)}
-                  maxLength={20}
-                />
+                <div className="input-wrapper">
+                  <input
+                    id="pseudo"
+                    type="text"
+                    className="input"
+                    placeholder="Entrez votre pseudo..."
+                    value={pseudo}
+                    onChange={(e) => setPseudo(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    maxLength={20}
+                  />
+                  <div className="input-highlight"></div>
+                </div>
               </div>
             </div>
 
             <div className="card-section">
-              <button onClick={handleStart} className="button">
-                Commencer
+              <button
+                onClick={handleStart}
+                className={`button ${pseudo.trim() ? "ready" : ""}`}
+                disabled={!pseudo.trim()}
+              >
+                <span className="button-content">
+                  <span className="button-text">Commencer le quiz</span>
+                </span>
+                <div className="button-ripple"></div>
               </button>
             </div>
           </div>

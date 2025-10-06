@@ -9,6 +9,7 @@ function App() {
     currentView,
     currentQuestionIndex,
     playerName,
+    answers,
     temperature,
     handleStartQuiz,
     handleAnswer,
@@ -35,6 +36,8 @@ function App() {
         playerName={playerName}
         totalQuestions={totalQuestions}
         onBackToHome={handleBackToHome}
+        answers={answers}
+        temperature={temperature}
       />
     );
   }

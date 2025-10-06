@@ -417,6 +417,17 @@
   max-width: 800px;
   width: 100%;
   position: relative;
+  opacity: 0;
+  animation: fadeInQuiz 1s ease-out 8s forwards;
+}
+
+@keyframes fadeInQuiz {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .temperature-gauge {
@@ -432,6 +443,17 @@
   backdrop-filter: blur(10px);
   z-index: 100;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  animation: fadeInTemperature 1s ease-out 8.5s forwards;
+}
+
+@keyframes fadeInTemperature {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .temperature-header {

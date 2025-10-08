@@ -14,12 +14,12 @@ export default function Timer() {
   //
   //
   const [temperature, setTemperature] = useState(0);
-  const [isTimerActive, setIsTimerActive] = useState(true);
+  const [isTimerActive, setIsTimerActive] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0); // Temps écoulé indépendant
+  const [timeRemaining, setTimeRemaining] = useState<string | 0>(); // Temps écoulé indépendant
   const [creditDebt, setCreditDebt] = useState(0); // Crédit de refroidissement (dette)
   /// Constantes
   const MAX_TEMP = 4;
-  const MIN_TEMP = 0;
   const TOTAL_TIME_MS = 10 * 60 * 1000; // 10 minutes
   const UPDATE_INTERVAL_MS = 1000; // 1 seconde
   /// Calcul de l'incrément par mise à jour
@@ -28,10 +28,6 @@ export default function Timer() {
   const displayedTemp = Math.max(0, Math.min(MAX_TEMP, temperature));
   const progressHeight = (displayedTemp / MAX_TEMP) * 100;
   /// Calcul du temps restant (basé sur le temps écoulé, pas la température affichée)
-  const timeRemaining =
-    isTimerActive && elapsedTime < TOTAL_TIME_MS
-      ? ((TOTAL_TIME_MS - elapsedTime) / 1000 / 60).toFixed(1)
-      : 0;
   //
   //
   // FONCION
@@ -84,6 +80,15 @@ export default function Timer() {
 
     return () => clearInterval(interval);
   }, [incrementPerUpdate, isTimerActive, creditDebt]);
+  ///
+  useEffect(() => {
+    const calcule =
+      isTimerActive && elapsedTime < TOTAL_TIME_MS
+        ? ((TOTAL_TIME_MS - elapsedTime) / 1000 / 60).toFixed(1)
+        : 0;
+    setTimeRemaining(calcule);
+  }, [elapsedTime]);
+  //
   /// Couleur dynamique : jaune → rouge
   const getProgressColor = () => {
     const ratio = displayedTemp / MAX_TEMP;
@@ -175,7 +180,8 @@ export default function Timer() {
               transform: "translateY(50%)",
               fontSize: "14px",
               fontWeight: "500",
-              color: "#333",
+              color: "#f8f9fa",
+              zIndex: 10,
             }}
           >
             {temp}°C
@@ -189,7 +195,7 @@ export default function Timer() {
               left: "-10px",
               width: "15px",
               height: "2px",
-              backgroundColor: "#333",
+              backgroundColor: "#f8f9fa",
             }}
           />
 
@@ -201,7 +207,7 @@ export default function Timer() {
               right: "-10px",
               width: "15px",
               height: "2px",
-              backgroundColor: "#333",
+              backgroundColor: "#f8f9fa",
             }}
           />
         </div>
@@ -240,6 +246,31 @@ export default function Timer() {
     </>
   );
   ///
+  const time = (
+    <div
+      style={{
+        marginTop: "5px",
+        backgroundColor: "#transparent",
+        fontSize: "14px",
+        color: "#f8f9fa",
+        textAlign: "center",
+      }}
+    >
+      <p>
+        {isTimerActive && elapsedTime < TOTAL_TIME_MS ? (
+          <>Temps restant : {timeRemaining} min</>
+        ) : (
+          <>Température maximale atteinte</>
+        )}
+      </p>
+      {creditDebt > 0 && (
+        <p style={{ margin: "5px 0", color: "#4ecdc4", fontWeight: "600" }}>
+          ❄️ Dette de refroidissement active
+        </p>
+      )}
+    </div>
+  );
+  ///
   const content = (
     <div
       style={{
@@ -264,7 +295,7 @@ export default function Timer() {
           borderRadius: "10px",
         }}
       >
-        <h2 style={{ marginBottom: "20px", color: "#333" }}>Thermostat</h2>
+        <h2 style={{ marginBottom: "20px", color: "#f8f9fa" }}>Thermostat</h2>
 
         {/* Thermomètre */}
         {thermostat}
@@ -308,34 +339,14 @@ export default function Timer() {
         )}
 
         {/* Informations supplémentaires */}
-        <div
-          style={{
-            marginTop: "20px",
-            padding: "15px",
-            backgroundColor: "#f8f9fa",
-            borderRadius: "5px",
-            fontSize: "14px",
-            color: "#666",
-            textAlign: "center",
-            minWidth: "250px",
-          }}
-        >
-          <p style={{ margin: "5px 0" }}>
-            {isTimerActive && elapsedTime < TOTAL_TIME_MS ? (
-              <>Temps restant : {timeRemaining} min</>
-            ) : (
-              <>Température maximale atteinte</>
-            )}
-          </p>
-          {creditDebt > 0 && (
-            <p style={{ margin: "5px 0", color: "#4ecdc4", fontWeight: "600" }}>
-              ❄️ Dette de refroidissement active
-            </p>
-          )}
-        </div>
+        {time}
       </div>
     </div>
   );
-
-  return { content, adjustTemperature } as const;
+  //
+  //
+  // RETURN
+  //
+  //
+  return { content, adjustTemperature, setIsTimerActive } as const;
 }
